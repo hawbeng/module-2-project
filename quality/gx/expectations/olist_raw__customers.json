@@ -1,0 +1,71 @@
+{
+  "expectations": [
+    {
+      "id": "202bd264-fb61-40c6-9e59-3f3f96097dcc",
+      "kwargs": {
+        "column_set": [
+          "customer_id",
+          "customer_unique_id",
+          "customer_zip_code_prefix",
+          "customer_city",
+          "customer_state"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_set"
+    },
+    {
+      "id": "8543f6cb-48a0-4d01-8c73-226bb7970580",
+      "kwargs": {
+        "value": 99441
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_equal"
+    },
+    {
+      "id": "28cab494-edac-4b57-b16c-5dc0250252cc",
+      "kwargs": {
+        "column": "customer_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "76088399-97ca-432a-9e9c-f07e8c3cb3e7",
+      "kwargs": {
+        "column": "customer_unique_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "b3c543fc-4030-4382-b7d1-51d9ddb7959f",
+      "kwargs": {
+        "column": "customer_state"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "9a234784-e207-4a83-9b34-106a171bc63c",
+      "kwargs": {
+        "column": "customer_state",
+        "value": 2.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_value_lengths_to_equal"
+    }
+  ],
+  "id": "fcd6c101-a73a-449e-9525-f74e9d147505",
+  "meta": {
+    "great_expectations_version": "1.22.0"
+  },
+  "name": "olist_raw__customers",
+  "notes": null
+}

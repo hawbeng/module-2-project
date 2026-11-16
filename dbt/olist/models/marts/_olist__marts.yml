@@ -1,0 +1,516 @@
+version: 2
+
+models:
+  # =========================================================================
+  # DIMENSIONS
+  # =========================================================================
+  - name: dim_customer
+    description: >
+      GRAIN: one row per PERSON (customer_unique_id), not per order. Olist
+      issues a fresh customer_id for every order, so the naive dimension makes
+      every customer look like a one-time buyer and destroys RFM entirely.
+      SCD Type 1: the export is static, so there is no genuine history to
+      preserve and we do not manufacture any.
+    columns:
+      - name: customer_key
+        description: customer_unique_id. The only correct grain for customer analysis.
+        data_tests: [unique, not_null]
+      - name: customer_state
+        description: Two-letter state code from the customer's most recent order. The destination half of a route.
+        data_tests: [not_null]
+      - name: customer_region
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [Norte, Nordeste, Centro-Oeste, Sudeste, Sul, Unknown]
+      - name: source_customer_id_count
+        description: >
+          How many source customer_ids collapsed into this person. Direct
+          evidence of the identity problem this dimension solves.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                inclusive: true
+      - name: is_repeat_customer
+        description: True where the person placed more than one order.
+
+  - name: dim_seller
+    description: >
+      GRAIN: one row per seller. seller_state is a first-class attribute, not
+      filler: nearly all Olist sellers sit in the Southeast, which is the
+      structural reason distant regions receive orders late.
+    columns:
+      - name: seller_key
+        data_tests: [unique, not_null]
+      - name: seller_state
+        data_tests: [not_null]
+      - name: seller_region
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [Norte, Nordeste, Centro-Oeste, Sudeste, Sul, Unknown]
+
+  - name: dim_date
+    description: >
+      GRAIN: one calendar day, 2016-01-01 to 2018-12-31. Exists so that the
+      "WHEN" half of the business case uses one consistent definition of month,
+      week and weekday everywhere, and so that nothing has to wrap the
+      partition column in a function to derive them.
+    columns:
+      - name: date_key
+        data_tests: [unique, not_null]
+      - name: year_month
+        data_tests: [not_null]
+      - name: is_in_analysis_window
+        description: >
+          Whether the day falls inside the window with usable Olist coverage.
+          Charts use this to trim or annotate the sparse first and last months
+          rather than presenting them as a collapse in demand.
+
+  # =========================================================================
+  # FACTS
+  # =========================================================================
+  - name: fct_orders
+    description: >
+      PRIMARY FACT for the delivery business case. GRAIN: one row per order,
+      modelled as an accumulating snapshot across the milestone chain
+      (purchased, approved, handed to carrier, delivered, against promised).
+      Lateness is a property of a shipment, not of a line within it, which is
+      why it lives here and not on fct_order_items. Partitioned by
+      order_purchase_date, clustered on customer_state, seller_state and
+      order_status.
+    columns:
+      - name: order_key
+        description: Primary key. One row per order.
+        data_tests: [unique, not_null]
+      - name: customer_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_customer')
+                field: customer_key
+      - name: seller_key
+        description: The primary seller, meaning the one contributing the most revenue to the order.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_seller')
+                field: seller_key
+      - name: order_date_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: order_status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [delivered, shipped, canceled, unavailable, invoiced, processing, created, approved]
+      - name: delivery_route
+        description: seller_state to customer_state. The unit of analysis for the WHERE question.
+      - name: order_revenue
+        description: Sum of item price for the order. Freight excluded by definition.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: order_freight
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: total_delivery_days
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 240
+                inclusive: true
+      - name: delay_vs_promise_days
+        description: The measure the headline late rate is derived from. Negative means early.
+      - name: is_late
+        description: NULL for undelivered orders, never false. Consumers must filter to delivered orders explicitly.
+      - name: review_score
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5]
+                quote: false
+      - name: late_order_revenue
+        description: order_revenue where the order was late, NULL otherwise, so a plain SUM answers "revenue delivered late".
+
+  - name: fct_order_items
+    description: >
+      GRAIN: one row per item line. The revenue backbone and the only correct
+      grain for product and seller analysis. Carries no delivery measures on
+      purpose: averaging delay across item lines would weight multi-item orders
+      incorrectly.
+    columns:
+      - name: order_item_key
+        data_tests: [unique, not_null]
+      - name: order_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_key
+      - name: product_key
+        data_tests:
+          - not_null
+      - name: seller_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_seller')
+                field: seller_key
+      - name: customer_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_customer')
+                field: customer_key
+      - name: item_price
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: freight_value
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+
+  - name: fct_payments
+    description: >
+      GRAIN: one row per payment record. A separate fact table on purpose:
+      payments and order items are two independent many-to-one relationships
+      with the order, so combining them would create a many-to-many join and
+      multiply money by the product of both counts.
+    columns:
+      - name: payment_key
+        data_tests: [unique, not_null]
+      - name: order_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_key
+      - name: payment_value
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+
+  # =========================================================================
+  # AGGREGATES
+  # =========================================================================
+  - name: agg_monthly_sales
+    description: >
+      BRIEF REQUIREMENT: monthly sales trends. GRAIN: one row per purchase
+      month. Revenue and order counts are aggregated separately at their own
+      natural grains and joined only once both are scalars per month, which is
+      what prevents revenue being multiplied by the item count. Each month also
+      splits revenue into new vs returning people (case B) and instalment vs
+      single-payment orders (case D).
+    columns:
+      - name: year_month
+        data_tests: [unique, not_null]
+      - name: revenue
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: order_count
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: new_customers
+        description: People whose first kept order fell in this month.
+        data_tests: [not_null]
+      - name: returning_customers
+        description: Distinct people placing a second-or-later kept order this month.
+        data_tests: [not_null]
+      - name: returning_revenue_share
+        description: Share of the month's revenue from second-or-later orders.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1.0001
+      - name: instalment_order_share
+        description: Share of the month's orders paid in more than one instalment.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+  - name: agg_customer_rfm
+    description: >
+      BRIEF REQUIREMENT: customer segmentation. GRAIN: one row per person
+      (customer_unique_id). Recency is measured against the olist_snapshot_date
+      project var, never CURRENT_DATE, so the segmentation is reproducible and
+      does not mark every customer dormant. Delivery columns quantify how much
+      high-value revenue is exposed to late delivery.
+    columns:
+      - name: customer_key
+        data_tests: [unique, not_null]
+      - name: recency_days
+        description: Days between the customer's latest order and the dataset snapshot date.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: frequency
+        description: Distinct orders. Counted from fct_orders, which is already one row per order.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                inclusive: true
+      - name: monetary
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: rfm_segment
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - "1. Champions"
+                  - "2. High value, recent"
+                  - "3. At risk, high value"
+                  - "4. New / promising"
+                  - "5. Dormant, low value"
+                  - "6. Occasional"
+      - name: is_high_value_with_late_delivery
+        description: High-monetary customer with at least one late order. The most expensive churn risk in the dataset.
+
+  # =========================================================================
+  # BUSINESS CASES B + D: customer value, retention and instalments
+  # =========================================================================
+  - name: agg_customer_cohort
+    description: >
+      BUSINESS CASE B. GRAIN: one row per acquisition cohort (month of the
+      customer's first kept order) per months_since_first. Dense grid, so a
+      month in which nobody returned is a row with retention_rate 0, not a
+      missing row. Person grain (customer_unique_id), same population as
+      agg_customer_rfm.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [cohort_month, months_since_first]
+    columns:
+      - name: cohort_month
+        description: First day of the month in which the cohort's members placed their first kept order.
+        data_tests: [not_null]
+      - name: cohort_year_month
+        description: cohort_month as 'YYYY-MM', for labels and filters.
+      - name: months_since_first
+        description: Whole months between the cohort month and the activity month. 0 is the acquisition month.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: activity_month
+        description: cohort_month plus months_since_first; the calendar month the activity row describes.
+      - name: cohort_size
+        description: Distinct people whose first kept order fell in cohort_month.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                inclusive: true
+      - name: active_customers
+        description: Distinct people from the cohort with at least one kept order in activity_month.
+      - name: order_count
+        description: Kept orders placed by the cohort in activity_month. 0 on rows where nobody returned.
+      - name: revenue
+        description: Item revenue (freight excluded) from those orders. Sums to fct_orders kept revenue across the grid.
+      - name: retention_rate
+        description: active_customers / cohort_size. 1.0 in month 0 by construction.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+      - name: is_in_analysis_window
+        description: True when cohort_month falls inside the analysis_start_date / analysis_end_date vars.
+
+  - name: agg_customer_clv
+    description: >
+      BUSINESS CASES B + D. GRAIN: one row per person (customer_unique_id),
+      same population as agg_customer_rfm. Realised lifetime value (what was
+      actually spent, freight excluded), not a forecast. First-order payment
+      type and instalments are carried as acquisition attributes so the link
+      between instalments and repeat purchase is measured cause-before-effect.
+    columns:
+      - name: customer_key
+        description: The person (customer_unique_id). Joins to dim_customer and agg_customer_rfm.
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('agg_customer_rfm')
+                field: customer_key
+      - name: lifetime_orders
+        description: Kept orders placed by the person. Equals agg_customer_rfm.frequency.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                inclusive: true
+      - name: lifetime_revenue
+        description: Realised CLV. Sum of order_revenue over the person's kept orders. Same caliber as agg_customer_rfm.monetary.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: avg_order_value
+        description: Mean order_revenue across the person's kept orders.
+      - name: first_order_revenue
+        description: order_revenue of the person's first kept order.
+      - name: repeat_revenue
+        description: lifetime_revenue minus first_order_revenue. Zero for one-time buyers.
+      - name: first_order_date
+        description: Purchase date of the first kept order.
+      - name: latest_order_date
+        description: Purchase date of the most recent kept order.
+      - name: tenure_days
+        description: Days between first and latest kept order. 0 for one-time buyers.
+      - name: days_since_first_order
+        description: Days from the first kept order to the olist_snapshot_date var. Bounds how long the person has had to return.
+      - name: is_repeat_customer
+        description: More than one kept order.
+        data_tests: [not_null]
+      - name: first_payment_type
+        description: primary_payment_type of the first kept order.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [credit_card, boleto, voucher, debit_card, no_payment_record]
+      - name: first_order_installments
+        description: max_payment_installments of the first kept order.
+      - name: first_installment_band
+        description: installment_band() of first_order_installments.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - "0. No payment record"
+                  - "1. Single payment"
+                  - "2. 2-3 instalments"
+                  - "3. 4-6 instalments"
+                  - "4. 7+ instalments"
+      - name: orders_with_instalments
+        description: Kept orders paid in more than one instalment.
+      - name: clv_decile
+        description: 10 = top 10% of customers by realised lifetime revenue.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 10
+                inclusive: true
+
+  - name: agg_installment_basket
+    description: >
+      BUSINESS CASE D: does offering instalments increase basket size? GRAIN:
+      one row per payment_type per instalment count. Built from fct_orders,
+      where payments are already collapsed to order grain, so revenue cannot
+      fan out across payment records. Shows association, not causation.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [payment_type, installments]
+    columns:
+      - name: payment_type
+        description: fct_orders.primary_payment_type; 'no_payment_record' when the order has none.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [credit_card, boleto, voucher, debit_card, no_payment_record]
+      - name: installments
+        description: fct_orders.max_payment_installments (the largest instalment count across the order's payments).
+      - name: installment_band
+        description: installment_band() of installments. The bands are defined once, in macros/installment_band.sql.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - "0. No payment record"
+                  - "1. Single payment"
+                  - "2. 2-3 instalments"
+                  - "3. 4-6 instalments"
+                  - "4. 7+ instalments"
+      - name: order_count
+        description: Kept orders.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                inclusive: true
+      - name: customers
+        description: Distinct people placing those orders.
+      - name: revenue
+        description: Sum of order_revenue (item price, freight excluded).
+      - name: freight
+        description: Sum of order_freight. Reported separately, never folded into revenue.
+      - name: avg_order_value
+        description: Mean order_revenue (AOV).
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: median_order_value
+        description: Approximate median order_revenue (APPROX_QUANTILES).
+      - name: avg_items_per_order
+        description: Mean order_item_count. Separates "more items" from "more expensive items".
+      - name: late_rate
+        description: Late delivered orders / delivered orders.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+                inclusive: true
+      - name: avg_review_score
+        description: Mean review score of the orders.
+      - name: share_of_payment_type_orders
+        description: order_count as a share of all orders with the same payment_type.
+      - name: share_of_revenue
+        description: revenue as a share of all kept revenue.
+      - name: is_reportable
+        description: order_count >= the min_orders_for_reporting var (30). Charts hide rows below it.

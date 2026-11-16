@@ -1,0 +1,98 @@
+{
+  "expectations": [
+    {
+      "id": "560bcb09-9038-438b-ae49-529ce70e7de6",
+      "kwargs": {
+        "column_set": [
+          "order_id",
+          "payment_sequential",
+          "payment_type",
+          "payment_installments",
+          "payment_value"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_set"
+    },
+    {
+      "id": "f9a77769-838d-4b47-931f-5c9b5f5235bc",
+      "kwargs": {
+        "value": 103886
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_equal"
+    },
+    {
+      "id": "0a676e70-eb85-424b-9f31-27c8a99464b3",
+      "kwargs": {
+        "column": "order_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "e19ece9e-9bca-470e-b6fe-f64a9f737ac3",
+      "kwargs": {
+        "column": "payment_sequential"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "da7ec21d-b554-49aa-bb00-87b66e9b7512",
+      "kwargs": {
+        "column": "payment_type"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "4e52f3a3-854c-46c8-a3a8-02960e7df20d",
+      "kwargs": {
+        "column": "payment_type",
+        "value_set": [
+          "boleto",
+          "credit_card",
+          "debit_card",
+          "not_defined",
+          "voucher"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
+    },
+    {
+      "id": "7b905193-20f7-4174-ac30-85764229e253",
+      "kwargs": {
+        "column": "payment_value",
+        "max_value": 100000.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "1d9b0c23-1790-41de-be93-3b20e4cc2b16",
+      "kwargs": {
+        "column": "payment_installments",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "0263f34c-e7f4-4819-9042-2b4a86a3a46c",
+  "meta": {
+    "great_expectations_version": "1.22.0"
+  },
+  "name": "olist_raw__order_payments",
+  "notes": null
+}

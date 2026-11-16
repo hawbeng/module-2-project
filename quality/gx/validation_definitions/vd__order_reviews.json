@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "102ce44c-4c2b-49e5-8ae4-051ae25d99ba",
+      "name": "order_reviews"
+    },
+    "batch_definition": {
+      "id": "3ea5c352-ff8d-4e51-b4c9-9bacd75960e1",
+      "name": "batch__order_reviews"
+    },
+    "datasource": {
+      "id": "109f08cf-3b90-4f54-b5fc-70675ab4ad77",
+      "name": "olist_files__order_reviews"
+    }
+  },
+  "id": "abfc8b0e-8f0b-4a60-90eb-60db209b329b",
+  "name": "vd__order_reviews",
+  "suite": {
+    "id": "0c3088c7-4e6a-4c48-be95-340fccee9b09",
+    "name": "olist_raw__order_reviews"
+  }
+}
