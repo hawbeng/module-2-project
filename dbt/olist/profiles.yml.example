@@ -1,0 +1,15 @@
+# Copy to profiles.yml (gitignored). Values come from your .env / shell environment.
+olist:
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
+      project: "{{ env_var('GCP_PROJECT_ID') }}"
+      dataset: olist_staging
+      location: US
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      priority: interactive
+      threads: 4
+  target: dev
