@@ -1,0 +1,92 @@
+{
+  "expectations": [
+    {
+      "id": "1658aa2b-2d96-4c8d-b702-9d49aaaeded2",
+      "kwargs": {
+        "column_set": [
+          "order_id",
+          "customer_id",
+          "order_status",
+          "order_purchase_timestamp",
+          "order_approved_at",
+          "order_delivered_carrier_date",
+          "order_delivered_customer_date",
+          "order_estimated_delivery_date"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_columns_to_match_set"
+    },
+    {
+      "id": "fa9430cd-9be5-413d-b1ef-81abd8915e25",
+      "kwargs": {
+        "value": 99441
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_equal"
+    },
+    {
+      "id": "80613955-0ccf-419e-9a04-a4808ccbf8e0",
+      "kwargs": {
+        "column": "order_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "188843a6-6004-4dd0-82b7-a3b64a51f4a7",
+      "kwargs": {
+        "column": "customer_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "59e43b75-ca79-454e-98bd-4708423ab226",
+      "kwargs": {
+        "column": "order_status"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "48faba2b-2386-4753-9f0e-94dc1272249f",
+      "kwargs": {
+        "column": "order_purchase_timestamp"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "e482c4a3-fbe4-4348-9025-ca05a928668a",
+      "kwargs": {
+        "column": "order_status",
+        "value_set": [
+          "approved",
+          "canceled",
+          "created",
+          "delivered",
+          "invoiced",
+          "processing",
+          "shipped",
+          "unavailable"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
+    }
+  ],
+  "id": "991bd9e5-1c3a-4c69-84a7-a7cc432763ae",
+  "meta": {
+    "great_expectations_version": "1.22.0"
+  },
+  "name": "olist_raw__orders",
+  "notes": null
+}

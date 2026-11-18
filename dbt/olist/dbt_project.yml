@@ -1,7 +1,12 @@
 name: olist
 version: "1.0.0"
 config-version: 2
-profile: olist
+profile: olist_analytics
+
+# Scope: business cases B (customer value and retention) and D (payments and
+# instalments). Delivery milestones are modelled only as far as fct_orders needs
+# them to explain churn (is_late, review_score); the delivery and product
+# aggregates of cases A and C are deliberately not built here.
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -10,13 +15,34 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
+target-path: "target"
 clean-targets: ["target", "dbt_packages"]
+
+# Single source of truth for every analytical cut-off; nothing downstream may
+# hard-code these.
+vars:
+  # Static export: RFM recency and CLV tenure are measured against this date,
+  # never CURRENT_DATE, so results are reproducible. Must match
+  # OLIST_SNAPSHOT_DATE in .env (read by warehouse.py).
+  olist_snapshot_date: "2018-10-17"
+  analysis_start_date: "2016-09-01"
+  analysis_end_date: "2018-10-31"
+  # Excluded from revenue, customer and instalment KPIs.
+  excluded_order_statuses: ["canceled", "unavailable"]
+  # Instalment/payment cells below this order count are flagged not reportable.
+  min_orders_for_reporting: 30
 
 models:
   olist:
+    +persist_docs:
+      relation: true
+      columns: true
     staging:
       +materialized: view
-      +schema: olist_staging
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: staging
     marts:
       +materialized: table
-      +schema: olist_marts
+      +schema: marts

@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "fdaa9f8e-6ae6-4ce1-9175-5a6278aa35e0",
+      "name": "order_payments"
+    },
+    "batch_definition": {
+      "id": "75f9989f-1cd3-492f-b703-54150991d27f",
+      "name": "batch__order_payments"
+    },
+    "datasource": {
+      "id": "eed9f0ce-fc57-4b5c-af3d-cc45706a80e4",
+      "name": "olist_files__order_payments"
+    }
+  },
+  "id": "07a77618-e59a-45b1-926f-279c73393f6c",
+  "name": "vd__order_payments",
+  "suite": {
+    "id": "0263f34c-e7f4-4819-9042-2b4a86a3a46c",
+    "name": "olist_raw__order_payments"
+  }
+}

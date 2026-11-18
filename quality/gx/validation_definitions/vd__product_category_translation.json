@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "b5ef13b0-e98b-4a01-aeb4-2598e92408d0",
+      "name": "product_category_translation"
+    },
+    "batch_definition": {
+      "id": "127b0f2c-fe86-4117-8ae6-5785344f59e9",
+      "name": "batch__product_category_translation"
+    },
+    "datasource": {
+      "id": "bbaf4ecb-150c-41f9-8a06-31821e83d6a9",
+      "name": "olist_files__product_category_translation"
+    }
+  },
+  "id": "dcf00323-b032-432a-b28b-2e67e7895aa9",
+  "name": "vd__product_category_translation",
+  "suite": {
+    "id": "f355b5dc-cd57-4498-a860-bef6afd7b409",
+    "name": "olist_raw__product_category_translation"
+  }
+}
