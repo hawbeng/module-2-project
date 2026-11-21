@@ -1,11 +1,11 @@
 {
   "data": {
     "asset": {
-      "id": "b5ef13b0-e98b-4a01-aeb4-2598e92408d0",
+      "id": "ba2d9d77-2cb8-457c-91f9-0602510536e8",
       "name": "product_category_translation"
     },
     "batch_definition": {
-      "id": "127b0f2c-fe86-4117-8ae6-5785344f59e9",
+      "id": "93308f68-bdb3-465d-968f-1ac09a845ad4",
       "name": "batch__product_category_translation"
     },
     "datasource": {

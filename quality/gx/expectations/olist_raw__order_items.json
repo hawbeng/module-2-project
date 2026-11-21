@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "e32e6c7c-d57a-4531-b6b0-2f641391f7a6",
+      "id": "70df3582-9c8a-4884-9b2e-b570e790642e",
       "kwargs": {
         "column_set": [
           "order_id",
@@ -18,7 +18,7 @@
       "type": "expect_table_columns_to_match_set"
     },
     {
-      "id": "45df0339-09cb-44fe-8ab3-0bb4a4f39aac",
+      "id": "1d836a11-e9a1-4552-9389-7b8a66723f88",
       "kwargs": {
         "value": 112650
       },
@@ -27,7 +27,7 @@
       "type": "expect_table_row_count_to_equal"
     },
     {
-      "id": "a60658c1-8675-4fa4-bf7f-7c65246012ed",
+      "id": "1a4dd15a-e170-4689-ab9d-280074d25a4b",
       "kwargs": {
         "column": "order_id"
       },
@@ -36,7 +36,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "c4af48fe-459d-4466-96ff-dc634c9438fd",
+      "id": "f34460a3-a6bb-4a17-8874-a761ecf49b71",
       "kwargs": {
         "column": "order_item_id"
       },
@@ -45,7 +45,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "112181c1-bebc-4e82-aa28-890b4928a1ba",
+      "id": "50614628-77d9-444c-871a-5146de80dc95",
       "kwargs": {
         "column": "product_id"
       },
@@ -54,7 +54,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "61cd165f-13f6-4f5e-8c76-65d33bece576",
+      "id": "bc8db0aa-5b53-45c7-a8eb-cb35e475528f",
       "kwargs": {
         "column": "seller_id"
       },
@@ -63,7 +63,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "0e187958-ae0f-4258-91b4-fc1cdd68322a",
+      "id": "7b497dd3-83b9-4d0c-9072-0ca7cc9c1a96",
       "kwargs": {
         "column": "price",
         "max_value": 100000.0,
@@ -74,7 +74,7 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "cc780da8-5b9a-4883-a166-e3239207ec95",
+      "id": "b4845dff-a494-44f8-9ac2-891d7e8d75eb",
       "kwargs": {
         "column": "freight_value",
         "max_value": 10000.0,
@@ -85,7 +85,7 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "3b4a3afe-e201-4344-a110-caf40ed00d9f",
+      "id": "a4694fac-a935-402d-96d6-110667513bd3",
       "kwargs": {
         "column": "order_item_id",
         "min_value": 1.0

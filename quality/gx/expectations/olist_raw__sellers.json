@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "1acbc0df-d913-45d1-9622-f605d3990334",
+      "id": "46c9349c-5f09-4b61-be7b-03c32b2ff521",
       "kwargs": {
         "column_set": [
           "seller_id",
@@ -15,7 +15,7 @@
       "type": "expect_table_columns_to_match_set"
     },
     {
-      "id": "e23f1b04-b99f-4a7a-b9b4-1fedb3bcae48",
+      "id": "44593be3-b213-411a-a4f1-02c64ffafa87",
       "kwargs": {
         "value": 3095
       },
@@ -24,7 +24,7 @@
       "type": "expect_table_row_count_to_equal"
     },
     {
-      "id": "dbd9150d-27f3-43ec-a432-30c703d74a2b",
+      "id": "a2561fc0-f8f4-43bf-ab25-3e769c366210",
       "kwargs": {
         "column": "seller_id"
       },
@@ -33,7 +33,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "57e73439-7e9e-43c3-b4ad-a4397ec7b312",
+      "id": "38788411-31e9-4840-8e8c-bf52af94f075",
       "kwargs": {
         "column": "seller_state"
       },
@@ -42,7 +42,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "5ec56b50-b7f3-4d2b-a71d-59d41ff4d052",
+      "id": "9309218c-ad04-4ab9-ab05-77a2a7a0e9cb",
       "kwargs": {
         "column": "seller_state",
         "value": 2.0

@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "8882c4c2-ad60-4004-9889-f0b9466cc726",
+      "id": "61baf54f-6bd9-4bd3-853c-862035190e29",
       "kwargs": {
         "column_set": [
           "review_id",
@@ -18,7 +18,7 @@
       "type": "expect_table_columns_to_match_set"
     },
     {
-      "id": "54f8075c-435e-4f5b-ad87-3f2b52f6f8f4",
+      "id": "cbb5de95-563a-4110-93e6-3c4de15b3b9a",
       "kwargs": {
         "value": 99224
       },
@@ -27,7 +27,7 @@
       "type": "expect_table_row_count_to_equal"
     },
     {
-      "id": "d7f34dba-ff48-4889-be05-db123c075540",
+      "id": "dc58821b-b2e9-4477-92aa-259eca6935d7",
       "kwargs": {
         "column": "review_id"
       },
@@ -36,7 +36,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "bc36d7d8-ed3e-4d52-96a9-5d3d33018c3f",
+      "id": "3790266e-052b-4a59-8668-a05b16d39622",
       "kwargs": {
         "column": "order_id"
       },
@@ -45,7 +45,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "38b50a5c-258d-427d-a6c9-166ff589f175",
+      "id": "33d25b9a-ad34-424b-9df0-135f2acd93c8",
       "kwargs": {
         "column": "review_score"
       },
@@ -54,7 +54,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "ee02fc07-edfd-4c2f-9a59-2dfce9368c0f",
+      "id": "e5b08fe8-d1d1-4a24-9b0d-4355c528717e",
       "kwargs": {
         "column": "review_score",
         "max_value": 5.0,

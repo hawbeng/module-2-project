@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "bde5cf9a-c4c0-408a-9ac7-a86e9c2133bc",
+      "id": "74959582-c324-4050-83cf-344ace16b4d5",
       "kwargs": {
         "column_set": [
           "geolocation_zip_code_prefix",
@@ -16,7 +16,7 @@
       "type": "expect_table_columns_to_match_set"
     },
     {
-      "id": "2ec970b7-42f3-491a-9d32-898b7d36a6a6",
+      "id": "3c556df5-d3c6-4e3e-94d6-1fa133ea951a",
       "kwargs": {
         "value": 1000163
       },
@@ -25,7 +25,7 @@
       "type": "expect_table_row_count_to_equal"
     },
     {
-      "id": "1a986257-7a40-494f-9466-e7ee46cef6f6",
+      "id": "b32147e1-7874-4147-82d4-f8ea0a6951e7",
       "kwargs": {
         "column": "geolocation_zip_code_prefix"
       },
@@ -34,7 +34,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "3b4a1266-cd62-404f-9780-852424d011fb",
+      "id": "e5130911-c18d-46a1-a7c4-5c6bc3df539d",
       "kwargs": {
         "column": "geolocation_lat"
       },
@@ -43,7 +43,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "59558ff0-0c30-4c65-97a7-55f6f7640c34",
+      "id": "90af5f87-13aa-42e9-9e7b-12e37955c582",
       "kwargs": {
         "column": "geolocation_lng"
       },
@@ -52,7 +52,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "cf76c676-0db5-4f5d-bd07-1a4bce68b4a2",
+      "id": "c8eab574-3198-4580-b779-491e55b6f2d3",
       "kwargs": {
         "column": "geolocation_lat",
         "max_value": 6.0,
@@ -64,7 +64,7 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "0bcb5c06-a953-4c4e-9573-3f02822400ce",
+      "id": "1bcee86b-97b6-47c3-b389-24d3b41e6c43",
       "kwargs": {
         "column": "geolocation_lng",
         "max_value": -32.0,

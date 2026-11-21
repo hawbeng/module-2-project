@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "560bcb09-9038-438b-ae49-529ce70e7de6",
+      "id": "b64d37f5-6f3b-419c-a7e7-84e3e875680a",
       "kwargs": {
         "column_set": [
           "order_id",
@@ -16,7 +16,7 @@
       "type": "expect_table_columns_to_match_set"
     },
     {
-      "id": "f9a77769-838d-4b47-931f-5c9b5f5235bc",
+      "id": "ae268c96-9c94-4afb-aab2-ffba68719809",
       "kwargs": {
         "value": 103886
       },
@@ -25,7 +25,7 @@
       "type": "expect_table_row_count_to_equal"
     },
     {
-      "id": "0a676e70-eb85-424b-9f31-27c8a99464b3",
+      "id": "8e8050af-683c-4475-b306-959f8018c038",
       "kwargs": {
         "column": "order_id"
       },
@@ -34,7 +34,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "e19ece9e-9bca-470e-b6fe-f64a9f737ac3",
+      "id": "2ab9c614-70b4-4dda-8b83-51e12e30cb2c",
       "kwargs": {
         "column": "payment_sequential"
       },
@@ -43,7 +43,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "da7ec21d-b554-49aa-bb00-87b66e9b7512",
+      "id": "1cb4182d-4b32-4c5b-ab88-532d3fe4216e",
       "kwargs": {
         "column": "payment_type"
       },
@@ -52,7 +52,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "4e52f3a3-854c-46c8-a3a8-02960e7df20d",
+      "id": "a353d8d6-ca6c-4ebc-9330-3a7c1d669e17",
       "kwargs": {
         "column": "payment_type",
         "value_set": [
@@ -68,7 +68,7 @@
       "type": "expect_column_values_to_be_in_set"
     },
     {
-      "id": "7b905193-20f7-4174-ac30-85764229e253",
+      "id": "9625ae36-4d91-494d-9dcd-f9227a0d9074",
       "kwargs": {
         "column": "payment_value",
         "max_value": 100000.0,
@@ -79,7 +79,7 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "1d9b0c23-1790-41de-be93-3b20e4cc2b16",
+      "id": "164927c5-871c-4c8f-8498-6c1d7628b5de",
       "kwargs": {
         "column": "payment_installments",
         "min_value": 0.0

@@ -1,10 +1,10 @@
 {
-  "batch_id": "e619c2935ff9",
-  "generated_at": "2026-11-16T15:22:57+00:00",
-  "source_url": "https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce",
-  "licence": "CC BY-NC-SA 4.0",
+  "batch_id": "ab8494a293be",
+  "generated_at": "2026-11-21T02:29:13+00:00",
+  "source_url": "",
+  "licence": "",
   "snapshot_date": "2018-10-17",
-  "gcs_uri_prefix": "gs://olist-group2-i4gq1-olist-raw/olist/raw/v1",
+  "gcs_uri_prefix": "gs://local-placeholder/olist/raw/v1",
   "files": [
     {
       "file": "olist_orders_dataset.csv",

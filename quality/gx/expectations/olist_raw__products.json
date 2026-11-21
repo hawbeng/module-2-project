@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "aea6b4cf-7181-4120-9235-2949839e7d5d",
+      "id": "9972876d-5738-4fc0-a48e-ac8bb06ba8f5",
       "kwargs": {
         "column_set": [
           "product_id",
@@ -20,7 +20,7 @@
       "type": "expect_table_columns_to_match_set"
     },
     {
-      "id": "e52251db-b8b9-472f-89be-d51982c85dd6",
+      "id": "796bfd65-1a4f-402e-959d-783a88ffe9db",
       "kwargs": {
         "value": 32951
       },
@@ -29,7 +29,7 @@
       "type": "expect_table_row_count_to_equal"
     },
     {
-      "id": "e842e6e7-a25f-4e41-805f-5fcd324c5cf4",
+      "id": "5dab1b5d-50f3-414d-8f75-8ead3f43b0ca",
       "kwargs": {
         "column": "product_id"
       },
@@ -38,7 +38,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "f0199e54-77fe-4062-8585-adfba33782aa",
+      "id": "023a18cb-a7ca-42d2-8a4d-dfb80e146c45",
       "kwargs": {
         "column": "product_id"
       },
